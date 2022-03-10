@@ -1,0 +1,67 @@
+_format_version: "1.1"
+services:
+- connect_timeout: 60000
+  host: localhost
+  name: app-login
+  port: 8080
+  protocol: http
+  read_timeout: 60000
+  retries: 5
+  routes:
+  - https_redirect_status_code: 426
+    name: login
+    path_handling: v0
+    paths:
+    - /\d+/login
+    preserve_host: false
+    protocols:
+    - http
+    - https
+    regex_priority: 0
+    request_buffering: true
+    response_buffering: true
+    strip_path: false
+  write_timeout: 60000
+- connect_timeout: 60000
+  host: localhost
+  name: app-resource
+  plugins:
+  - config:
+      anonymous: null
+      claims_to_verify:
+      - exp
+      cookie_names: []
+      header_names:
+      - authorization
+      key_claim_name: aud
+      maximum_expiration: 0
+      run_on_preflight: true
+      secret_is_base64: false
+      uri_param_names:
+      - jwt
+    enabled: true
+    name: jwt
+    protocols:
+    - grpc
+    - grpcs
+    - http
+    - https
+  port: 8080
+  protocol: http
+  read_timeout: 60000
+  retries: 5
+  routes:
+  - https_redirect_status_code: 426
+    name: resource
+    path_handling: v0
+    paths:
+    - /\d+/resource
+    preserve_host: false
+    protocols:
+    - http
+    - https
+    regex_priority: 0
+    request_buffering: true
+    response_buffering: true
+    strip_path: false
+  write_timeout: 60000
